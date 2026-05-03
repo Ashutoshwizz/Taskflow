@@ -94,10 +94,12 @@ const Auth = (() => {
   });
 
   // ---- Logout ----
-  document.getElementById('logout-btn')?.addEventListener('click', () => {
-    clearSession();
-    App.showAuth();
-  });
+ document.getElementById('logout-btn')?.addEventListener('click', () => {
+  clearSession();
+
+  // 🔥 Force full reset
+  window.location.reload();
+});
 
   return { loadUser, getUser, isAdmin, saveSession, clearSession };
 })();
