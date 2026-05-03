@@ -3,7 +3,7 @@
 // ==========================================
 const Users = (() => {
 
-  
+
   async function loadUsers() {
     const list = document.getElementById('users-list');
     list.innerHTML = '<p class="loading">Loading users…</p>';
@@ -42,14 +42,19 @@ const Users = (() => {
         </div>
         <span class="badge badge-role-${u.role}">${u.role}</span>
         <div class="user-actions">
-          ${!self ? `
-            <button class="btn btn-sm btn-secondary btn-toggle-role"
-              data-id="${u._id}" data-role="${u.role === 'admin' ? 'member' : 'admin'}">
-              Make ${u.role === 'admin' ? 'Member' : 'Admin'}
-            </button>
-            <button class="btn btn-sm btn-danger btn-delete-user" data-id="${u._id}">Delete</button>
-          ` : ''}
-        </div>
+  ${!self ? `
+    <button class="btn btn-sm btn-secondary btn-toggle-role"
+      data-id="${u._id}" data-role="${u.role === 'admin' ? 'member' : 'admin'}">
+      Make ${u.role === 'admin' ? 'Member' : 'Admin'}
+    </button>
+
+    ${u.role !== 'admin' ? `
+      <button class="btn btn-sm btn-danger btn-delete-user" data-id="${u._id}">
+        Delete
+      </button>
+    ` : ''}
+  ` : ''}
+</div>
       </div>`;
   }
 
