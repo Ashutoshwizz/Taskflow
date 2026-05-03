@@ -69,8 +69,9 @@ const Projects = (() => {
     </div>
   `;
 }
-
+let currentProjectId = null;
   async function openProjectDetail(projectId) {
+    currentProjectId = projectId;
     App.switchView('project-detail');
 
     try {
@@ -127,6 +128,36 @@ const Projects = (() => {
     await api.delete(`/api/projects/${id}`);
     loadProjects();
   }
+document.addEventListener('DOMContentLoaded', () => {
 
+  document.getElementById('add-member-btn')?.addEventListener('click', () => {
+    document.getElementById('member-modal').classList.remove('hidden');
+  });
+
+  document.getElementById('member-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('member-email').value;
+    const role = document.getElementById('member-role').value;
+
+    try {
+      await api.post(`/api/projects/${currentProjectId}/members`, {
+        email: email,
+        role: role
+      });
+
+      App.toast('Member added successfully');
+
+      document.getElementById('member-modal').classList.add('hidden');
+
+      openProjectDetail(currentProjectId);
+
+    } catch (err) {
+      console.error(err);
+      App.toast(err.message, 'error');
+    }
+  });
+
+});
   return { loadProjects, openProjectModal, openProjectDetail };
 })();
