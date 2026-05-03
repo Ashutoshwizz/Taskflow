@@ -37,17 +37,29 @@ const Projects = (() => {
   }
 
   function renderProjectCard(p) {
-    const s = p.taskStats || {};
-    const progress = s.total ? Math.round((s.done / s.total) * 100) : 0;
-    const isAdmin = Auth.isAdmin();
+  const s = p.taskStats || {};
+  const progress = s.total ? Math.round((s.done / s.total) * 100) : 0;
+  const isAdmin = Auth.isAdmin();
 
-    return `
-      <div class="project-card" data-id="${p._id}">
-        <div class="project-title">${esc(p.name)}</div>
-        ${isAdmin ? `<button class="btn-edit-project" data-id="${p._id}">Edit</button>` : ''}
-        <div>${progress}% complete</div>
-      </div>`;
-  }
+  return `
+    <div class="project-card" data-id="${p._id}">
+      
+      <div class="project-card-header">
+        <div class="project-name">${esc(p.name)}</div>
+      </div>
+
+      <div class="project-footer">
+        ${isAdmin ? `
+          <button class="btn btn-sm btn-secondary btn-edit-project" data-id="${p._id}">
+            Edit
+          </button>
+        ` : ''}
+        <span class="project-progress">${progress}% complete</span>
+      </div>
+
+    </div>
+  `;
+}
 
   async function openProjectDetail(projectId) {
     App.switchView('project-detail');
