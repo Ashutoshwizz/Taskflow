@@ -28,7 +28,7 @@ const Auth = (() => {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) return null;
     try {
-      const data = await api.get('/auth/me');
+      const data = await api.get('/api/auth/me');
       saveSession(token, data.user);
       return data.user;
     } catch {
@@ -53,7 +53,7 @@ const Auth = (() => {
     const errEl = document.getElementById('login-error');
     errEl.classList.add('hidden');
     try {
-      const data = await api.post('/auth/login', {
+      const data = await api.post('/api/auth/login', {
         email: document.getElementById('login-email').value,
         password: document.getElementById('login-password').value
       });
@@ -71,7 +71,7 @@ const Auth = (() => {
     const errEl = document.getElementById('signup-error');
     errEl.classList.add('hidden');
     try {
-      const data = await api.post('/auth/signup', {
+     const data = await api.post('/api/auth/signup', {
         name:     document.getElementById('signup-name').value,
         email:    document.getElementById('signup-email').value,
         password: document.getElementById('signup-password').value,
