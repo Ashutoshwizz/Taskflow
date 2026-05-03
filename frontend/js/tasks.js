@@ -203,11 +203,71 @@ const Tasks = (() => {
     try {
       await api.delete(`/api/tasks/${taskId}`); // ✅ FIXED
       App.toast('Task deleted.');
-      loadKanban(projectId, _currentMembers);
+       await loadKanban(projectId, _currentMembers);
     } catch (err) {
       App.toast(err.message, 'error');
     }
   }
+  // ---- Task Form Submit ----
+document.getElementById('task-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const projectId = document.getElementById('task-project-id').value;
+  const taskId = document.getElementById('task-id').value;
+
+  const body = {
+    title: document.getElementById('task-title').value,
+    description: document.getElementById('task-desc').value,
+    priority: document.getElementById('task-priority').value,
+    dueDate: document.getElementById('task-due').value,
+    assignedTo: document.getElementById('task-assignee').value,
+    status: document.getElementById('task-status').value
+  };
+
+  try {
+    if (taskId) {
+      await api.put(`/api/tasks/${taskId}`, body);
+      App.toast('Task updated!');
+    } else {
+      await api.post('/api/tasks', body);
+      App.toast('Task created!');
+    }
+
+    document.getElementById('task-modal').classList.add('hidden');
+
+    // ✅ FIX (this was missing)
+   await loadKanban(projectId, _currentMembers);
+await Tasks.loadDashboard();
+await Tasks.loadMyTasks();
+
+  } catch (err) {
+    App.toast(err.message, 'error');
+  }
+});
+// ---- Status Change ----
+document.addEventListener('change', async (e) => {
+  if (!e.target.classList.contains('status-dropdown')) return;
+
+  const taskId = e.target.dataset.id;
+  const newStatus = e.target.value;
+
+  try {
+    await api.put(`/api/tasks/${taskId}`, { status: newStatus });
+
+    App.toast('Status updated!');
+
+    // ✅ FIX (this was missing)
+  await Tasks.loadDashboard();
+await Tasks.loadMyTasks();
+
+    if (_currentProjectId) {
+      await loadKanban(_currentProjectId, _currentMembers);
+    }
+
+  } catch (err) {
+    App.toast(err.message, 'error');
+  }
+});
 
   return { loadDashboard, loadMyTasks, loadKanban, openTaskModal };
 
