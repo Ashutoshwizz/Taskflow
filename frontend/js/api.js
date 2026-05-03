@@ -1,7 +1,7 @@
 // ==========================================
 // API Module — centralised fetch wrapper
 // ==========================================
-const API_BASE = "https://lovely-healing-production-cc7a.up.railway.app";
+const API_BASE = "https://lovely-healing-production-cc7a.up.railway.app/api";
 
 const api = {
   _token() {
