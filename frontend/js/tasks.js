@@ -217,14 +217,15 @@ document.getElementById('task-form')?.addEventListener('submit', async (e) => {
   const projectId = document.getElementById('task-project-id').value;
   const taskId = document.getElementById('task-id').value;
 
-  const body = {
-    title: document.getElementById('task-title').value,
-    description: document.getElementById('task-desc').value,
-    priority: document.getElementById('task-priority').value,
-    dueDate: document.getElementById('task-due').value,
-    assignedTo: document.getElementById('task-assignee').value,
-    status: document.getElementById('task-status').value
-  };
+const body = {
+  title: document.getElementById('task-title').value,
+  description: document.getElementById('task-desc').value,
+  priority: document.getElementById('task-priority').value,
+  dueDate: document.getElementById('task-duedate').value,
+  assignedTo: document.getElementById('task-assignee').value,
+  status: document.getElementById('task-status').value,
+  project: projectId   // 🔥 THIS LINE FIXES YOUR MAIN ISSUE
+};
 
   try {
     if (taskId) {

@@ -103,7 +103,10 @@ async function init() {
     showAuth();   // ✅ show login only if not logged in
   }
 }
-
+document.getElementById('back-to-projects')?.addEventListener('click', () => {
+  document.getElementById('view-project-detail').classList.remove('active');
+  document.getElementById('view-projects').classList.add('active');
+});
   init();
 
   return { showAuth, showMain, switchView, toast };
