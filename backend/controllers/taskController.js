@@ -23,7 +23,13 @@ exports.getTasks = async (req, res, next) => {
     const access = await hasProjectAccess(project, req.user._id, req.user.role);
     if (!access) return res.status(403).json({ success: false, message: 'Access denied.' });
 
-    const filter = { project };
+    const filter = {
+  project,
+  $or: [
+    { assignedTo: req.user._id },
+    { createdBy: req.user._id }
+  ]
+};
     if (status) filter.status = status;
     if (priority) filter.priority = priority;
     if (assignedTo) filter.assignedTo = assignedTo;
@@ -45,9 +51,12 @@ exports.getTasks = async (req, res, next) => {
 exports.getDashboard = async (req, res, next) => {
   try {
     const now = new Date();
-    const query = req.user.role === 'admin'
-      ? {}
-      : { $or: [{ assignedTo: req.user._id }, { createdBy: req.user._id }] };
+    const query = {
+  $or: [
+    { assignedTo: req.user._id },
+    { createdBy: req.user._id }
+  ]
+};
 
     const tasks = await Task.find(query).populate('project', 'name color');
 
