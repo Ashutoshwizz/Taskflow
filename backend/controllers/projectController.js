@@ -7,14 +7,12 @@ const User = require('../models/User');
 // @access  Private
 exports.getProjects = async (req, res, next) => {
   try {
-    const query = req.user.role === 'admin'
-      ? {}  // Admins see all projects
-      : {
-          $or: [
-            { owner: req.user._id },
-            { 'members.user': req.user._id }
-          ]
-        };
+    const query = {
+  $or: [
+    { owner: req.user._id },
+    { 'members.user': req.user._id }
+  ]
+};
 
     const projects = await Project.find(query)
       .populate('owner', 'name email avatar')
@@ -23,7 +21,13 @@ exports.getProjects = async (req, res, next) => {
 
     // Add task stats to each project
     const projectsWithStats = await Promise.all(projects.map(async (p) => {
-      const tasks = await Task.find({ project: p._id });
+      const tasks = await Task.find({
+  project: p._id,
+  $or: [
+    { assignedTo: req.user._id },
+    { createdBy: req.user._id }
+  ]
+});
       const stats = {
         total: tasks.length,
         todo: tasks.filter(t => t.status === 'todo').length,
