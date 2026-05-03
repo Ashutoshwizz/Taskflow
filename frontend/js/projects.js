@@ -48,13 +48,22 @@ const Projects = (() => {
         <div class="project-name">${esc(p.name)}</div>
       </div>
 
+      <div class="project-desc">
+        ${p.description ? esc(p.description) : 'No description'}
+      </div>
+
+      <div class="project-meta">
+        <span class="badge badge-status">${p.status || 'ACTIVE'}</span>
+        <span>${s.total || 0} tasks ${s.overdue || 0} overdue</span>
+      </div>
+
       <div class="project-footer">
         ${isAdmin ? `
           <button class="btn btn-sm btn-secondary btn-edit-project" data-id="${p._id}">
             Edit
           </button>
         ` : ''}
-        <span class="project-progress">${progress}% complete</span>
+        <span>${progress}% complete</span>
       </div>
 
     </div>
