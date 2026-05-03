@@ -204,6 +204,8 @@ const Tasks = (() => {
       await api.delete(`/api/tasks/${taskId}`); // ✅ FIXED
       App.toast('Task deleted.');
        await loadKanban(projectId, _currentMembers);
+await Tasks.loadDashboard();
+await Tasks.loadMyTasks();
     } catch (err) {
       App.toast(err.message, 'error');
     }
