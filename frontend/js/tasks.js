@@ -182,20 +182,22 @@ const Tasks = (() => {
   }
 
   // ---- Modal ----
-  function openTaskModal(projectId, taskId = null, defaultStatus = 'todo') {
-    document.getElementById('task-project-id').value = projectId;
-    document.getElementById('task-id').value = taskId || '';
+ function openTaskModal(projectId, taskId = null, defaultStatus = 'todo') {
+  document.getElementById('task-project-id').value = projectId;
+  document.getElementById('task-id').value = taskId || '';
 
-    const sel = document.getElementById('task-assignee');
-    sel.innerHTML = '<option value="">Unassigned</option>';
+  document.getElementById('task-status').value = defaultStatus; // ✅ ADD THIS
 
-    _currentMembers.forEach(m => {
-      const u = m.user;
-      sel.innerHTML += `<option value="${u._id}">${esc(u.name)}</option>`;
-    });
+  const sel = document.getElementById('task-assignee');
+  sel.innerHTML = '<option value="">Unassigned</option>';
 
-    document.getElementById('task-modal').classList.remove('hidden');
-  }
+  _currentMembers.forEach(m => {
+    const u = m.user;
+    sel.innerHTML += `<option value="${u._id}">${esc(u.name)}</option>`;
+  });
+
+  document.getElementById('task-modal').classList.remove('hidden');
+}
 
   async function deleteTask(taskId, projectId) {
     if (!confirm('Delete this task?')) return;
@@ -217,14 +219,16 @@ document.getElementById('task-form')?.addEventListener('submit', async (e) => {
   const projectId = document.getElementById('task-project-id').value;
   const taskId = document.getElementById('task-id').value;
 
+const assignedValue = document.getElementById('task-assignee').value;
+
 const body = {
   title: document.getElementById('task-title').value,
   description: document.getElementById('task-desc').value,
   priority: document.getElementById('task-priority').value,
   dueDate: document.getElementById('task-duedate').value,
-  assignedTo: document.getElementById('task-assignee').value,
   status: document.getElementById('task-status').value,
-  project: projectId   // 🔥 THIS LINE FIXES YOUR MAIN ISSUE
+  project: projectId,
+  assignedTo: assignedValue ? assignedValue : undefined  // ✅ FIX
 };
 
   try {
