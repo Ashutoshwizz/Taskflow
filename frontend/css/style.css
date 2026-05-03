@@ -1128,7 +1128,7 @@ input[type="color"] {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;              /* space between buttons */
-  min-width: 250px;      /* keeps alignment consistent */
+  min-width: 260px;      /* keeps alignment consistent */
 }
 
 .user-actions .btn {
