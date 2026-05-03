@@ -8,15 +8,9 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS Configuration (secure)
-const allowedOrigins = [
-  process.env.CLIENT_URL,          // production frontend
-  'http://localhost:5500',         // dev (if using live server)
-  'http://localhost:3000'          // dev (React/Vite etc.)
-];
-
+// ✅ CORS Configuration
 app.use(cors({
-  origin: true,
+  origin: true, // allow all for now (we’ll restrict later)
   credentials: true
 }));
 
@@ -24,19 +18,20 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '../frontend')));
-
 // API Routes
 app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/tasks',    require('./routes/tasks'));
 app.use('/api/users',    require('./routes/users'));
 
-// Catch-all: serve frontend for non-API routes
-app.get(/^(?!\/api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
+// ✅ Serve frontend ONLY in development
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend')));
+
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  });
+}
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -53,7 +48,7 @@ const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
-    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
