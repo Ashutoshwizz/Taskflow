@@ -25,18 +25,26 @@ const Auth = (() => {
   }
 
   async function loadUser() {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (!token) return null;
-    try {
-      const data = await api.get('/api/auth/me');
-      saveSession(token, data.user);
-      return data.user;
-    } catch {
-      clearSession();
-      return null;
-    }
-  }
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) return null;
 
+  try {
+    const data = await api.get('/api/auth/me');
+
+    // ✅ Safety check
+    if (!data || !data.user) {
+      throw new Error("Invalid response from server");
+    }
+
+    saveSession(token, data.user);
+    return data.user;
+
+  } catch (err) {
+    console.error("loadUser error:", err.message);
+    clearSession();
+    return null;
+  }
+}
   // ---- Tab switching ----
   document.querySelectorAll('.auth-tab').forEach(tab => {
     tab.addEventListener('click', () => {

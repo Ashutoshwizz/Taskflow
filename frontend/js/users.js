@@ -7,19 +7,23 @@ const Users = (() => {
     const list = document.getElementById('users-list');
     list.innerHTML = '<p class="loading">Loading users…</p>';
     try {
-      const data = await api.get('/users');
+      const data = await api.get('/api/users'); // ✅ FIXED
+
       if (!data.data.length) {
         list.innerHTML = '<p class="empty-state">No users found.</p>';
         return;
       }
+
       list.innerHTML = data.data.map(renderUserRow).join('');
 
       list.querySelectorAll('.btn-toggle-role').forEach(btn => {
         btn.addEventListener('click', () => toggleRole(btn.dataset.id, btn.dataset.role));
       });
+
       list.querySelectorAll('.btn-delete-user').forEach(btn => {
         btn.addEventListener('click', () => deleteUser(btn.dataset.id));
       });
+
     } catch (err) {
       list.innerHTML = `<p class="error">${esc(err.message)}</p>`;
     }
@@ -27,6 +31,7 @@ const Users = (() => {
 
   function renderUserRow(u) {
     const self = Auth.getUser()?._id === u._id;
+
     return `
       <div class="user-row">
         <div class="user-avatar">${(u.name || 'U')[0].toUpperCase()}</div>
@@ -49,7 +54,7 @@ const Users = (() => {
 
   async function toggleRole(userId, newRole) {
     try {
-      await api.put(`/users/${userId}/role`, { role: newRole });
+      await api.put(`/api/users/${userId}/role`, { role: newRole }); // ✅ FIXED
       App.toast(`Role updated to ${newRole}.`);
       loadUsers();
     } catch (err) {
@@ -60,7 +65,7 @@ const Users = (() => {
   async function deleteUser(userId) {
     if (!confirm('Delete this user permanently?')) return;
     try {
-      await api.delete(`/users/${userId}`);
+      await api.delete(`/api/users/${userId}`); // ✅ FIXED
       App.toast('User deleted.');
       loadUsers();
     } catch (err) {
