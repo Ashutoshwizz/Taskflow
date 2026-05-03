@@ -17,13 +17,42 @@ const api = {
   },
 
  async request(method, path, body = null) {
-  const opts = { method, headers: this._headers() };
-  if (body) opts.body = JSON.stringify(body);
+  const token = localStorage.getItem('tf_token');
 
-  const res = await fetch(`${API_BASE}${path}`, opts);
+  const headers = {
+    'Content-Type': 'application/json'
+  };
 
-  const text = await res.text();               // ⭐ safe read
-  const data = text ? JSON.parse(text) : {};   // ⭐ safe parse
+  // ✅ Always attach token if present
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const opts = {
+    method,
+    headers
+  };
+
+  if (body) {
+    opts.body = JSON.stringify(body);
+  }
+
+  const url = `${API_BASE}${path}`;
+
+  console.log("👉 URL:", url);
+  console.log("👉 TOKEN:", token);
+
+  const res = await fetch(url, opts);
+
+  const text = await res.text();
+
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (e) {
+    console.error("❌ Non-JSON response:", text);
+    throw new Error("Server returned HTML instead of JSON");
+  }
 
   if (!res.ok) {
     throw new Error(data.message || 'Request failed');
