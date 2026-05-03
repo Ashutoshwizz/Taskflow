@@ -8,8 +8,19 @@ dotenv.config();
 
 const app = express();
 
+// ✅ CORS Configuration (secure)
+const allowedOrigins = [
+  process.env.CLIENT_URL,          // production frontend
+  'http://localhost:5500',         // dev (if using live server)
+  'http://localhost:3000'          // dev (React/Vite etc.)
+];
+
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
